@@ -1,0 +1,30 @@
+{{define "index.html"}}
+    <!DOCTYPE html>
+    <html lang="{{or .Lang "en"}}">
+    {{template "head" .}}
+    <body>
+    {{template "header" .}}
+    {{template "sidebar" .}}
+
+    <div id="content" class="content content__main">
+        <h1>Just a blog</h1>
+        <p>
+            This is the personal blog of John Toniutti.
+        </p>
+
+        {{if .Cards}}
+            {{range .Cards}}
+                {{template "card" .}}
+            {{end}}
+        {{else}}
+            <p>
+                No posts yet.
+            </p>
+        {{end}}
+
+    </div>
+
+    {{template "footer" .}}
+    </body>
+    </html>
+{{end}}

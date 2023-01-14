@@ -1,0 +1,12 @@
+# Notice: Collection of data on jotone.eu through automated means is
+# prohibited unless you have express written permission from jotone.eu
+# and may only be conducted for the limited purpose contained in said
+# permission.
+
+User-agent: *
+Disallow: /.well-known/
+Disallow: /terms
+Disallow: /privacy
+Disallow: /contacts
+
+Sitemap: https://jotone.eu/sitemap.txt

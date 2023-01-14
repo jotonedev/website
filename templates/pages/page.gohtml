@@ -1,0 +1,16 @@
+{{define "page.html"}}
+    <!DOCTYPE html>
+    <html lang="{{or .Lang "en"}}">
+    {{template "head" .}}
+    <body>
+    {{template "header" .}}
+    {{template "sidebar" .}}
+
+    <div id="content" class="content content__main">
+        {{.Content}}
+    </div>
+
+    {{template "footer" .}}
+    </body>
+    </html>
+{{end}}
