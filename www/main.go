@@ -2,13 +2,15 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"github.com/vasiliyaltunin/gorobots"
-	"html/template"
-	"log"
+	"jotone.eu/www/db"
 	"net/http"
 )
 
 func main() {
+	db.ConnectDB()
+
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/**/*.gohtml")
 
@@ -16,7 +18,7 @@ func main() {
 	router.StaticFS("/static", http.Dir("./static"))
 
 	router.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusOK, "404.gohtml", gin.H{
+		c.HTML(http.StatusOK, "404.html", gin.H{
 			"PageTitle": "404",
 			"NoRobots":  true,
 		})
@@ -26,12 +28,6 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"PageTitle":   "Home",
 			"Description": "Home page for jotone.eu",
-		})
-	})
-
-	router.GET("/test", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "page.html", gin.H{
-			"content": template.HTML("This is a test page"),
 		})
 	})
 
@@ -59,8 +55,18 @@ func main() {
 		})
 	})
 
+	articleRoutes := router.Group("/posts")
+	{
+		articleRoutes.GET("/", getPosts)
+		articleRoutes.GET("/:post_id", getPost)
+		articleRoutes.GET("/sitemap.xml", getPostsSitemap)
+	}
+
 	err := router.Run("localhost:8080")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Close DB connection
+	db.CloseDB()
 }
