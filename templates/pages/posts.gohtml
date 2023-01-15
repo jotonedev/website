@@ -43,15 +43,13 @@
         {{end}}
         </div>
         {{if .Posts}}
-            <div>
-                <nav>
-                    {{if .ShowPrev}}
-                        <a class="prev" href="/posts/{{.Prev}}">&lt;</a>
-                    {{end}}
-                    {{if .ShowNext}}
-                        <a class="next" href="/posts/{{.Next}}">&gt;</a>
-                    {{end}}
-                </nav>
+            <div class="timeline__buttons">
+                {{if .ShowPrev}}
+                    <a class="timeline__buttons__prev" href="/posts/{{.Prev}}">&lt; prev</a>
+                {{end}}
+                {{if .ShowNext}}
+                    <a class="timeline__buttons__next" href="/posts/{{.Next}}">next &gt;</a>
+                {{end}}
             </div>
         {{end}}
     </div>
