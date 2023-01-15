@@ -7,17 +7,16 @@ type Post struct {
 	Title       string
 	Description string
 	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Author      string
 	Content     string
 	Lang        string
+	Thumbnail   Thumbnail
 }
 
-type Author struct {
-	ID        int
-	Name      string
-	Surname   string
-	Email     string
-	Username  string
-	CreatedAt time.Time
+type Thumbnail struct {
+	ID     int
+	Alt    string
+	URL    string
+	Height int
+	Width  int
+	Type   string
 }

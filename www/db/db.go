@@ -22,7 +22,7 @@ func ConnectDB() {
 }
 
 func GetPost(postID string) (Post, error) {
-	stmt, err := db.Prepare("select * from blog.posts where id = $1")
+	stmt, err := db.Prepare("select posts.title, posts.description, posts.created_at, posts.content, posts.lang, thumbnails.image, thumbnails.width, thumbnails.height, thumbnails.type from blog.posts left join blog.thumbnails on posts.thumbnail_id = blog.thumbnails.id where posts.id=$1")
 	if err != nil {
 		log.Error(err)
 	}
@@ -30,8 +30,36 @@ func GetPost(postID string) (Post, error) {
 	var post Post
 
 	row := stmt.QueryRow(postID)
-	err = row.Scan(&post.ID, &post.Title, &post.Description, &post.CreatedAt, &post.UpdatedAt, &post.Author, &post.Content, &post.Lang)
+	err = row.Scan(&post.Title, &post.Description, &post.CreatedAt, &post.Content, &post.Lang, &post.Thumbnail.URL, &post.Thumbnail.Width, &post.Thumbnail.Height, &post.Thumbnail.Type)
 	return post, err
+}
+
+func GetPosts(amount int, offset int) ([]Post, error) {
+	stmt, err := db.Prepare("select posts.id, posts.title, posts.description, posts.created_at, thumbnails.alt_text, thumbnails.image from blog.posts left join blog.thumbnails on posts.thumbnail_id = blog.thumbnails.id order by created_at desc limit $1 offset $2")
+	if err != nil {
+		log.Error(err)
+	}
+
+	var posts []Post
+	rows, err := stmt.Query(amount, offset)
+
+	if err != nil {
+		log.Error(err)
+		return posts, err
+	}
+
+	for rows.Next() {
+		var post Post
+		err = rows.Scan(&post.ID, &post.Title, &post.Description, &post.CreatedAt, &post.Thumbnail.Alt, &post.Thumbnail.URL)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, err
 }
 
 func CloseDB() {

@@ -23,6 +23,12 @@
         <meta property="og:title" content="John Toniutti">
         <meta property="og:description" content="{{.Description}}">
         <meta property="og:type" content="website">
+        {{if .PreviewImage}}
+            <meta property="og:image" content="{{.PreviewImage.URL}}">
+            <meta property="og:image:type" content="{{.PreviewImage.Type}}">
+            <meta property="og:image:width" content="{{.PreviewImage.Width}}">
+            <meta property="og:image:height" content="{{.PreviewImage.Height}}">
+        {{end}}
         <meta property="og:image" content="/static/imgs/banner.png">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:width" content="1200">
@@ -33,7 +39,7 @@
         <meta property="og:image:height" content="1200">
 
         {{if .NoRobots}}
-            <META NAME="robots" CONTENT="noindex,nofollow">
+            <meta name="robots" content="noindex,nofollow">
         {{end}}
 
         <link rel="preload" href="/static/roboto/roboto.woff2" as="font" type="font/woff2" crossorigin="anonymous">

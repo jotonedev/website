@@ -55,11 +55,12 @@ func main() {
 		})
 	})
 
+	router.GET("/post/:post_id", getPost)
+
 	articleRoutes := router.Group("/posts")
 	{
 		articleRoutes.GET("/", getPosts)
-		articleRoutes.GET("/:post_id", getPost)
-		articleRoutes.GET("/sitemap.xml", getPostsSitemap)
+		articleRoutes.GET("/:offset", getPosts)
 	}
 
 	err := router.Run("localhost:8080")
