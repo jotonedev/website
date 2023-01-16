@@ -3,6 +3,8 @@
 ## Build
 FROM golang:latest
 
+WORKDIR /
+
 ENV GO111MODULE=on
 
 COPY go.mod ./
@@ -12,14 +14,14 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go build -o -v -a -ldflags '-w -extldflags "-static"' jotone.eu
+RUN CGO_ENABLED=0 go build -v -a -ldflags '-w -extldflags "-static"' -o server
 
 ## Run
 FROM gcr.io/distroless/static-debian11
 
 WORKDIR /
 
-COPY --from=build /jotone.eu /server
+COPY --from=build /server /server
 
 USER nonroot:nonroot
 EXPOSE 8080
