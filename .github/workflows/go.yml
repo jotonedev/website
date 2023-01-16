@@ -31,7 +31,6 @@ jobs:
     #  run: go test -v jotone.eu/www
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
-      author: "jotone"
       inputs:
         path: ./posts(.exe)?
         retention-days: 7
