@@ -14,27 +14,27 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.19
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
 
-    - name: Build
-      run: go build -v jotone.eu
+      - name: Build
+        run: go build -v jotone.eu
 
-    #- name: Test
-    #  run: go test -v jotone.eu
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: server
-        path: jotone.eu
-        retention-days: 7
+      #- name: Test
+      #  run: go test -v jotone.eu
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: server
+          path: jotone.eu
+          retention-days: 7
 
 
 

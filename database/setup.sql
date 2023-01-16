@@ -3,12 +3,12 @@ create schema if not exists blog;
 
 create table if not exists blog.thumbnails
 (
-    id         serial primary key not null,
-    alt_text   varchar(256)       not null,
-    image      varchar(512)       not null,
-    width      integer            not null,
-    height     integer            not null,
-    type       varchar(32)        not null default 'image/png'
+    id       serial primary key not null,
+    alt_text varchar(256)       not null,
+    image    varchar(512)       not null,
+    width    integer            not null,
+    height   integer            not null,
+    type     varchar(32)        not null default 'image/png'
 );
 
 create table if not exists blog.posts
@@ -23,11 +23,18 @@ create table if not exists blog.posts
     thumbnail_id int             not null references blog.thumbnails (id)
 );
 
-create function set_updated_timestamp() returns trigger language plpgsql as $$
+create function set_updated_timestamp() returns trigger
+    language plpgsql as
+$$
 begin
     new.updated_at = now();
     return new;
-end; $$;
+end;
+$$;
 
-create trigger set_updated_timestamp before update on blog.posts for each row execute procedure set_updated_timestamp();
+create trigger set_updated_timestamp
+    before update
+    on blog.posts
+    for each row
+execute procedure set_updated_timestamp();
 
