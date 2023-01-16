@@ -1,17 +1,5 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+name: Go Release Builder (SLSA)
 
-# This workflow lets you compile your Go project using a SLSA3 compliant builder.
-# This workflow will generate a so-called "provenance" file describing the steps
-# that were performed to generate the final binary.
-# The project is an initiative of the OpenSSF (openssf.org) and is developed at
-# https://github.com/slsa-framework/slsa-github-generator.
-# The provenance file can be verified using https://github.com/slsa-framework/slsa-verifier.
-# For more information about SLSA and how it improves the supply-chain, visit slsa.dev.
-
-name: SLSA Go releaser
 on:
   workflow_dispatch:
   release:
@@ -23,8 +11,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         arch: [amd64, arm64]
+        exclude:
+          - os: macos-latest
+            arch: arm64
+          - os: windows-latest
+            arch: arm64
     permissions:
       id-token: write # To sign.
       contents: write # To upload release assets.
@@ -33,3 +26,4 @@ jobs:
     with:
       go-version: 1.19
       config-file: .slsa-goreleaser/${{matrix.os}}-${{matrix.arch}}.yml
+      private-repository: true

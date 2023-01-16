@@ -9,7 +9,9 @@
         <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
         <link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="red">
         <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
-        <link rel="manifest" href="/static/manifest.json">
+        {{if .Manifest}}
+            <link rel="manifest" href="/static/manifest.json">
+        {{end}}
 
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
         <meta name="description" content="{{.Description}}">
@@ -40,6 +42,8 @@
 
         {{if .NoRobots}}
             <meta name="robots" content="noindex,nofollow">
+        {{else}}
+            <meta name="robots" content="index,follow">
         {{end}}
 
         <link rel="preload" href="/static/roboto/roboto.woff2" as="font" type="font/woff2" crossorigin="anonymous">

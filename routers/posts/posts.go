@@ -1,23 +1,26 @@
-package main
+package posts
 
 import (
 	"database/sql"
+	"encoding/xml"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	log "github.com/sirupsen/logrus"
 	"html/template"
-	"jotone.eu/www/db"
+	"jotone.eu/database"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 )
 
 var digitCheck = regexp.MustCompile(`^[0-9]+$`)
+var baseUrl = os.Getenv("BASE_URL")
 
-func getPost(c *gin.Context) {
-	log.Debugf("Serving post ID: %s", c.Param("post_id"))
+func GetPost(c *gin.Context) {
+	log.Debugf("Serving posts ID: %s", c.Param("post_id"))
 
-	// Getting post from DB
+	// Getting posts from DB
 	if len(c.Param("post_id")) > 9 || !digitCheck.MatchString(c.Param("post_id")) {
 		c.HTML(http.StatusBadRequest, "400.html", gin.H{
 			"PageTitle":   "400",
@@ -27,7 +30,7 @@ func getPost(c *gin.Context) {
 		return
 	}
 
-	post, err := db.GetPost(c.Param("post_id"))
+	post, err := database.GetPost(c.Param("post_id"))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.HTML(http.StatusNotFound, "404.html", gin.H{
@@ -37,10 +40,10 @@ func getPost(c *gin.Context) {
 			})
 			return
 		} else {
-			log.Errorf("Error getting post from DB: %s", err)
+			log.Errorf("Error getting posts from DB: %s", err)
 			c.HTML(http.StatusInternalServerError, "500.html", gin.H{
 				"PageTitle":   "500",
-				"Description": "Internal server error",
+				"Description": "Internal posts error",
 				"NoRobots":    true,
 			})
 			return
@@ -50,7 +53,7 @@ func getPost(c *gin.Context) {
 	// Parsing markdown
 	html := markdown.ToHTML([]byte(post.Content), nil, nil)
 
-	// Serving post
+	// Serving posts
 	c.HTML(http.StatusOK, "page.html", gin.H{
 		"PageTitle":    post.Title,
 		"Description":  post.Description,
@@ -61,7 +64,7 @@ func getPost(c *gin.Context) {
 	})
 }
 
-func getPosts(c *gin.Context) {
+func GetPosts(c *gin.Context) {
 	var offset int
 	var err error
 
@@ -84,14 +87,14 @@ func getPosts(c *gin.Context) {
 		offset = 0
 	}
 
-	posts, err := db.GetPosts(11, offset*10)
+	posts, err := database.GetPosts(11, offset*10)
 
 	if err != nil {
 		log.Errorf("Error getting posts from DB: %s", err)
 
 		c.HTML(http.StatusInternalServerError, "500.html", gin.H{
 			"PageTitle":   "500",
-			"Description": "Internal server error",
+			"Description": "Internal posts error",
 			"NoRobots":    true,
 		})
 		return
@@ -124,7 +127,7 @@ func getPosts(c *gin.Context) {
 	if len(posts) == 11 {
 		Next = offset + 1
 		ShowNext = true
-		// Remove last post from list
+		// Remove last posts from list
 		posts = posts[:len(posts)-1]
 	} else {
 		Next = 0
@@ -145,13 +148,35 @@ func getPosts(c *gin.Context) {
 	})
 }
 
-func getPostsSitemap(c *gin.Context) {
+func GetSitemap(c *gin.Context) {
 	log.Debugf("Generating sitemap.xml")
-	c.XML(http.StatusOK, gin.H{
-		"PageTitle":   "Posts",
-		"Description": "All posts of jotone.eu",
-		"Content":     "TODO: list of posts",
-		"NoRobots":    false,
-		"Lang":        "en",
-	})
+	posts, err := database.GetPostsList(baseUrl)
+
+	if err != nil {
+		log.Errorf("Error getting posts from DB: %s", err)
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{
+			"PageTitle":   "500",
+			"Description": "Internal posts error",
+			"NoRobots":    true,
+		})
+		return
+	}
+
+	var xmldata URLSet
+	xmldata.XMLNS = "http://www.sitemaps.org/schemas/sitemap/0.9"
+	xmldata.Url = posts
+
+	resp, err := xml.MarshalIndent(xmldata, "", "  ")
+	if err != nil {
+		log.Errorf("Error marshalling XML: %s", err)
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{
+			"PageTitle":   "500",
+			"Description": "Internal posts error",
+			"NoRobots":    true,
+		})
+		return
+	}
+	resp = []byte(xml.Header + string(resp))
+
+	c.Data(http.StatusOK, "application/xml", resp)
 }

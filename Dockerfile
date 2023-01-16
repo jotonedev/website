@@ -1,12 +1,18 @@
-FROM busybox:stable-musl
-ENV PORT=8000
-LABEL maintainer="John Toniutti <john@jotone.eu>"
+# syntax=docker/dockerfile:1
+FROM golang:1.20rc3-alpine3.17
 
-ADD www /www/
+ENV GO111MODULE=on
 
-EXPOSE $PORT
+COPY go.mod ./
+COPY go.sum ./
 
-HEALTHCHECK CMD nc -z localhost $PORT
+RUN go mod download
 
-# Create a basic webserver and run it until the container is stopped
-CMD echo "httpd started" && trap "exit 0;" TERM INT; httpd -v -p $PORT -h /www -f & wait
+COPY . ./
+
+RUN CGO_ENABLED=0 go build -o -v -a  jotone.eu
+
+EXPOSE 8080
+HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost:8080 || exit 1
+
+CMD [ "/server" ]

@@ -1,10 +1,11 @@
-package db
+package database
 
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"strconv"
 )
 
 var db *sql.DB
@@ -55,6 +56,51 @@ func GetPosts(amount int, offset int) ([]Post, error) {
 			log.Error(err)
 			continue
 		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, err
+}
+
+func GetPostCount() (int, error) {
+	stmt, err := db.Prepare("select count(*) from blog.posts")
+	if err != nil {
+		log.Error(err)
+	}
+
+	var count int
+
+	row := stmt.QueryRow()
+	err = row.Scan(&count)
+	return count, err
+}
+
+func GetPostsList(baseURL string) ([]Post, error) {
+	stmt, err := db.Prepare("select id, updated_at from blog.posts")
+	if err != nil {
+		log.Error(err)
+	}
+
+	var posts []Post
+
+	rows, err := stmt.Query()
+
+	if err != nil {
+		log.Error(err)
+		return posts, err
+	}
+
+	for rows.Next() {
+		var post Post
+
+		err = rows.Scan(&post.ID, &post.UpdatedAt)
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+
+		post.URL = baseURL + "/post/" + strconv.Itoa(post.ID)
 
 		posts = append(posts, post)
 	}
