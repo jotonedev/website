@@ -21,7 +21,7 @@ FROM gcr.io/distroless/static-debian11
 
 WORKDIR /
 
-COPY --from=build /server /server
+COPY --from=0 /server /server
 
 USER nonroot:nonroot
 EXPOSE 8080
