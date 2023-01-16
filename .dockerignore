@@ -1,0 +1,8 @@
+.build/
+.github/
+.run/
+.slsa-goreleaser/
+.database/setup.sql
+.gitignore
+README.md
+Makefile

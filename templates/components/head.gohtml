@@ -9,7 +9,9 @@
         <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
         <link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="red">
         <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
-        <link rel="manifest" href="/static/manifest.json">
+        {{if .Manifest}}
+            <link rel="manifest" href="/static/manifest.json">
+        {{end}}
 
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
         <meta name="description" content="{{.Description}}">
@@ -23,6 +25,12 @@
         <meta property="og:title" content="John Toniutti">
         <meta property="og:description" content="{{.Description}}">
         <meta property="og:type" content="website">
+        {{if .PreviewImage}}
+            <meta property="og:image" content="{{.PreviewImage.URL}}">
+            <meta property="og:image:type" content="{{.PreviewImage.Type}}">
+            <meta property="og:image:width" content="{{.PreviewImage.Width}}">
+            <meta property="og:image:height" content="{{.PreviewImage.Height}}">
+        {{end}}
         <meta property="og:image" content="/static/imgs/banner.png">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:width" content="1200">
@@ -33,7 +41,9 @@
         <meta property="og:image:height" content="1200">
 
         {{if .NoRobots}}
-            <META NAME="robots" CONTENT="noindex,nofollow">
+            <meta name="robots" content="noindex,nofollow">
+        {{else}}
+            <meta name="robots" content="index,follow">
         {{end}}
 
         <link rel="preload" href="/static/roboto/roboto.woff2" as="font" type="font/woff2" crossorigin="anonymous">

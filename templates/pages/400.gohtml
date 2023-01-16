@@ -1,4 +1,4 @@
-{{define "404.html"}}
+{{define "400.html"}}
     <!DOCTYPE html>
     <html lang="{{or .Lang "en"}}">
     {{template "head" .}}
@@ -7,7 +7,7 @@
     {{template "sidebar" .}}
 
     <div id="content" class="container content">
-        <h1>Page not found</h1>
+        <h1>Bad Request</h1>
     </div>
 
     {{template "footer" .}}

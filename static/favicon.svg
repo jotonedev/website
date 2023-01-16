@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<svg width="500" height="500" viewBox="0 0 250 250" version="1.2" baseProfile="tiny-ps"
-     xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" baseProfile="tiny-ps" version="1.2"
+     viewBox="0 0 250 250">
     <title>jotone.eu</title>
     <circle cx="125" cy="125" r="125" fill="#fff"/>
     <g stroke-width="1.5" font-size="288" font-weight="bold">
