@@ -1,4 +1,4 @@
-name: Docker Build
+name: Container Builder
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -13,12 +13,10 @@ on:
     tags: [ 'v*.*.*' ]
 
 env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   # Platform names for multi-platform images
-  PLATFORMS: linux/amd64,linux/arm64,linux/arm/v7
+  PLATFORMS: linux/amd64,linux/arm64,${{ $GITHUB_REF != 'develop' && ',linux/arm/v7' || '' }}
 
 
 jobs:
@@ -93,6 +91,6 @@ jobs:
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
         env:
-          TAGS: ${{ steps.docker_meta.outputs.tags }}
+          TAGS: ${{ steps.meta.outputs.tags }}
           COSIGN_EXPERIMENTAL: "true"
         run: cosign sign ${TAGS}

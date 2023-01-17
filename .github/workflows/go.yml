@@ -25,10 +25,10 @@ jobs:
           cache: true
 
       - name: Build
-        run: go build -v server
+        run: go build -v jotone.eu
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           name: server
-          path: server
+          path: jotone.eu
