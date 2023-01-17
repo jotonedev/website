@@ -68,6 +68,10 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 		c.FileFromFS("/static/favicon.ico", http.FS(staticFS))
 	})
 
+	router.GET("/browserconfig.xml", func(c *gin.Context) {
+		c.FileFromFS("/static/browserconfig.xml", http.FS(staticFS))
+	})
+
 	// --------------|
 	// Static Routes |
 	// --------------|

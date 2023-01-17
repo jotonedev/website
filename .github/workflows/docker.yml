@@ -5,7 +5,7 @@ on:
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    tags: [ 'v*.*', 'v*.*.*' ]
 
 env:
   # github.repository as <account>/<repo>
