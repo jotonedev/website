@@ -5,4 +5,5 @@
 .database/setup.sql
 .gitignore
 README.md
+LICENSE.md
 Makefile

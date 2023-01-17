@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ## Build
-FROM golang:latest
+FROM golang:latest as builder
 
 WORKDIR /
 
@@ -15,14 +15,19 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go build -v -a -ldflags '-w -extldflags "-static"' -o server
+RUN CGO_ENABLED=0 go build -v -a -ldflags '-s -w -extldflags "-static"' -o server
+
+## Add executable to image for healthcheck
+FROM busybox:glibc as busybox
 
 ## Run
 FROM gcr.io/distroless/static-debian11
 
 WORKDIR /
 
-COPY --from=0 /server /server
+COPY --from=busybox /bin/sh /bin/sh
+COPY --from=busybox /bin/curl /bin/curl
+COPY --from=builder /server /server
 
 USER nonroot:nonroot
 EXPOSE 8080
