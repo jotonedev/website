@@ -6,6 +6,7 @@ FROM golang:latest
 WORKDIR /
 
 ENV GO111MODULE=on
+ENV GIN_MODE=release
 
 COPY go.mod ./
 COPY go.sum ./

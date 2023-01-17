@@ -65,6 +65,8 @@ func GetPost(c *gin.Context) {
 }
 
 func GetPosts(c *gin.Context) {
+	log.Debugf("Generating posts list")
+
 	var offset int
 	var err error
 
@@ -134,7 +136,6 @@ func GetPosts(c *gin.Context) {
 		ShowNext = false
 	}
 
-	log.Debugf("Generating posts list")
 	c.HTML(http.StatusOK, "posts.html", gin.H{
 		"PageTitle":   "Posts",
 		"Description": "All posts of jotone.eu",

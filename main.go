@@ -20,17 +20,17 @@ func main() {
 	database.ConnectDB()
 
 	router := routers.InitRouter(tmplFS, staticFS)
+	// Trust cloudflare proxy
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"https://jotone.eu", "https://images.jotone.eu"},
 		AllowMethods: []string{"GET", "HEAD"},
-		AllowHeaders: []string{"*"},
 		MaxAge:       12 * time.Hour,
 	}))
 
 	router.Use(limits.RequestSizeLimiter(10))
 
-	err := router.Run("localhost:8080")
+	err := router.Run(":8080")
 	if err != nil {
 		log.Fatal(err)
 	}
