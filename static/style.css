@@ -238,8 +238,7 @@ header nav ul li a:hover {
 
 .timeline__post__image figure img {
     aspect-ratio: 3/2;
-    max-width: 300px;
-    max-height: 200px;
+    max-width: 210px;
     width: 100%;
 }
 
@@ -256,13 +255,7 @@ header nav ul li a:hover {
 .timeline__buttons a {
     margin-right: 3em;
     margin-left: 3em;
-}
-
-.timeline__buttons__prev {
-    flex: 1;
-}
-
-.timeline__buttons__next {
+    font-size: 1.1rem;
     flex: 1;
 }
 
@@ -273,8 +266,7 @@ header nav ul li a:hover {
 
 footer {
     display: block;
-
-    margin: 2.5em auto 0em;
+    margin: 2.5em auto 0;
     font-size: 1.1rem;
 }
 

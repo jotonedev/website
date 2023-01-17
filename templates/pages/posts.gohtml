@@ -46,9 +46,9 @@
         </div>
         {{if .Posts}}
             <div class="timeline__buttons">
-                <a class="timeline__buttons__prev" href="/timeline/{{.Prev}}"
+                <a href="/timeline/{{.Prev}}"
                    {{if not .ShowPrev}}style="visibility:hidden;"{{end}}>&lt; prev</a>
-                <a class="timeline__buttons__next" href="/timeline/{{.Next}}"
+                <a href="/timeline/{{.Next}}"
                    {{if not .ShowNext}}style="visibility:hidden;"{{end}}>next &gt;</a>
             </div>
         {{end}}
