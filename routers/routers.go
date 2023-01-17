@@ -12,7 +12,7 @@ import (
 
 // InitRouter initialize router and return it
 func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
-	router := gin.Default()
+	router := gin.New()
 	router.Use(gin.Logger())
 
 	templates := template.Must(template.New("").ParseFS(tmplFS, "templates/components/*.gohtml", "templates/pages/*.gohtml"))

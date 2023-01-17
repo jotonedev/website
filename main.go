@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"jotone.eu/database"
 	"jotone.eu/routers"
-	"time"
 )
 
 //go:embed templates/*
@@ -25,7 +24,7 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"https://jotone.eu", "https://images.jotone.eu"},
 		AllowMethods: []string{"GET", "HEAD"},
-		MaxAge:       12 * time.Hour,
+		MaxAge:       12 * 60 * 60,
 	}))
 
 	router.Use(limits.RequestSizeLimiter(10))
