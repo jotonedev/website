@@ -13,11 +13,10 @@ import (
 // InitRouter initialize router and return it
 func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	router := gin.Default()
+	router.Use(gin.Logger())
 
 	templates := template.Must(template.New("").ParseFS(tmplFS, "templates/components/*.gohtml", "templates/pages/*.gohtml"))
 	router.SetHTMLTemplate(templates)
-
-	router.LoadHTMLGlob("templates/**/*.gohtml")
 
 	// -------|
 	// Assets |
@@ -29,12 +28,25 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	}
 	router.StaticFS("/static", http.FS(sub))
 
-	// ----------|
-	// Error 404 |
-	// ----------|
+	// -------|
+	// Errors |
+	// -------|
+
+	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
+		err, ok := recovered.(string)
+		log.Error(err)
+		if ok {
+			c.HTML(http.StatusInternalServerError, "500.html", gin.H{
+				"PageTitle": "500",
+				"NoRobots":  true,
+			})
+		} else {
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+	}))
 
 	router.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusOK, "404.html", gin.H{
+		c.HTML(http.StatusNotFound, "404.html", gin.H{
 			"PageTitle": "404",
 			"NoRobots":  true,
 		})
@@ -104,6 +116,8 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 		postsRoutes.GET("/", posts.GetPosts)
 		postsRoutes.GET("/:offset", posts.GetPosts)
 	}
+
+	setTrustedProxy(router)
 
 	return router
 }
