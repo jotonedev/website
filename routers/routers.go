@@ -2,18 +2,32 @@ package routers
 
 import (
 	"embed"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"html/template"
 	"io/fs"
 	"jotone.eu/routers/posts"
 	"net/http"
+	"strings"
 )
+
+func staticMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if strings.Contains(c.Request.RequestURI, "/static/") {
+			c.Header("Cache-Control", "public, max-age=172800")
+		}
+	}
+}
 
 // InitRouter initialize router and return it
 func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
+
+	// Add middleware
+	router.Use(gzip.Gzip(gzip.BestSpeed))
+	router.Use(staticMiddleware())
 
 	templates := template.Must(template.New("").ParseFS(tmplFS, "templates/components/*.gohtml", "templates/pages/*.gohtml"))
 	router.SetHTMLTemplate(templates)
@@ -57,18 +71,22 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	// -------------|
 
 	router.GET("/robots.txt", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=31536000")
 		c.FileFromFS("/static/robots.txt", http.FS(staticFS))
 	})
 
 	router.GET("/sitemap.xml", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=31536000")
 		c.FileFromFS("/static/sitemap.xml", http.FS(staticFS))
 	})
 
 	router.GET("/favicon.ico", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=31536000")
 		c.FileFromFS("/static/favicon.ico", http.FS(staticFS))
 	})
 
 	router.GET("/browserconfig.xml", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=31536000")
 		c.FileFromFS("/static/browserconfig.xml", http.FS(staticFS))
 	})
 
@@ -77,6 +95,8 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	// --------------|
 
 	router.GET("/", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=86400")
+
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"PageTitle":   "Home",
 			"Description": "Home page for jotone.eu",
@@ -85,6 +105,8 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	})
 
 	router.GET("/privacy", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=86400")
+
 		c.HTML(http.StatusOK, "privacy.html", gin.H{
 			"PageTitle":   "Privacy",
 			"Description": "Privacy policy for jotone.eu",
@@ -93,6 +115,8 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	})
 
 	router.GET("/terms", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=86400")
+
 		c.HTML(http.StatusOK, "terms.html", gin.H{
 			"PageTitle":   "Terms",
 			"Description": "Terms of service for jotone.eu",
@@ -101,6 +125,8 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	})
 
 	router.GET("/contacts", func(c *gin.Context) {
+		c.Header("Cache-Control", "public, max-age=86400")
+
 		c.HTML(http.StatusOK, "contacts.html", gin.H{
 			"PageTitle":   "Contacts",
 			"Description": "Contacts for jotone.eu",

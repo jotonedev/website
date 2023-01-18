@@ -1,8 +1,10 @@
 package posts
 
 import (
+	"crypto/md5"
 	"database/sql"
 	"encoding/xml"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	log "github.com/sirupsen/logrus"
@@ -12,6 +14,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 var digitCheck = regexp.MustCompile(`^[0-9]+$`)
@@ -50,10 +53,23 @@ func GetPost(c *gin.Context) {
 		}
 	}
 
+	// Calculate etag
+	data := []byte(post.UpdatedAt.Format(time.RFC3339))
+	etag := fmt.Sprintf("%x", md5.Sum(data))
+
+	// Check if etag is the same
+	if c.Request.Header.Get("If-None-Match") == etag {
+		c.Status(http.StatusNotModified)
+		return
+	}
+
 	// Parsing markdown
 	html := markdown.ToHTML([]byte(post.Content), nil, nil)
 
 	// Serving posts
+	c.Header("Cache-Control", "public, max-age=86400")
+	c.Header("ETag", etag)
+
 	c.HTML(http.StatusOK, "page.html", gin.H{
 		"PageTitle":    post.Title,
 		"Description":  post.Description,
@@ -111,6 +127,19 @@ func GetPosts(c *gin.Context) {
 		return
 	}
 
+	// Calculate etag using all last updated dates
+	var sign string
+	for _, post := range posts {
+		sign += post.UpdatedAt.Format(time.RFC3339)
+	}
+	var etag = fmt.Sprintf("%x", md5.Sum([]byte(sign)))
+
+	// Check if etag is the same
+	if c.Request.Header.Get("If-None-Match") == etag {
+		c.Status(http.StatusNotModified)
+		return
+	}
+
 	var Prev int
 	var Next int
 	var ShowPrev bool
@@ -135,6 +164,10 @@ func GetPosts(c *gin.Context) {
 		Next = 0
 		ShowNext = false
 	}
+
+	// Serving posts
+	c.Header("Cache-Control", "public, max-age=33200")
+	c.Header("ETag", etag)
 
 	c.HTML(http.StatusOK, "posts.html", gin.H{
 		"PageTitle":   "Posts",
@@ -179,5 +212,7 @@ func GetSitemap(c *gin.Context) {
 	}
 	resp = []byte(xml.Header + string(resp))
 
+	// Serving sitemap
+	c.Header("Cache-Control", "public, max-age=43200")
 	c.Data(http.StatusOK, "application/xml", resp)
 }
