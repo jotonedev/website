@@ -1,5 +1,6 @@
 .build/
 .github/
+.git/
 .run/
 .slsa-goreleaser/
 .database/setup.sql

@@ -1,21 +1,41 @@
-package routers
+package router
 
 import (
+	"crypto/md5"
 	"embed"
+	"fmt"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"html/template"
 	"io/fs"
-	"jotone.eu/routers/posts"
+	"jotone.eu/router/posts"
 	"net/http"
+	"os"
 	"strings"
 )
 
+var StaticVersion = os.Getenv("STATIC_VERSION")
+var staticEtag = fmt.Sprintf("%x", md5.Sum([]byte(StaticVersion)))
+
 func staticMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if strings.Contains(c.Request.RequestURI, "post") || strings.Contains(c.Request.RequestURI, "timeline") {
+			return
+		}
+
+		if c.Request.Header.Get("If-None-Match") == staticEtag {
+			c.AbortWithStatus(http.StatusNotModified)
+			return
+		}
+
 		if strings.Contains(c.Request.RequestURI, "/static/") {
 			c.Header("Cache-Control", "public, max-age=172800")
+		}
+
+		//goland:noinspection GoBoolExpressions
+		if StaticVersion != "" {
+			c.Header("ETag", staticEtag)
 		}
 	}
 }
@@ -70,80 +90,50 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	// Common Files |
 	// -------------|
 
-	router.GET("/robots.txt", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=31536000")
-		c.FileFromFS("/static/robots.txt", http.FS(staticFS))
-	})
+	router.GET("/robots.txt", getRobots(staticFS))
+	router.HEAD("/robots.txt", getRobots(staticFS))
 
-	router.GET("/sitemap.xml", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=31536000")
-		c.FileFromFS("/static/sitemap.xml", http.FS(staticFS))
-	})
+	router.GET("/sitemap.xml", getSitemap(staticFS))
+	router.HEAD("/sitemap.xml", getSitemap(staticFS))
 
-	router.GET("/favicon.ico", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=31536000")
-		c.FileFromFS("/static/favicon.ico", http.FS(staticFS))
-	})
+	router.GET("/favicon.ico", getFavicon(staticFS))
+	router.HEAD("/favicon.ico", getFavicon(staticFS))
 
-	router.GET("/browserconfig.xml", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=31536000")
-		c.FileFromFS("/static/browserconfig.xml", http.FS(staticFS))
-	})
+	router.GET("/browserconfig.xml", getConfig(staticFS))
+	router.HEAD("/browserconfig.xml", getConfig(staticFS))
 
 	// --------------|
 	// Static Routes |
 	// --------------|
 
-	router.GET("/", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=86400")
+	router.GET("/", getIndex())
+	router.HEAD("/", getIndex())
 
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"PageTitle":   "Home",
-			"Description": "Home page for jotone.eu",
-			"Manifest":    true,
-		})
-	})
+	router.GET("/privacy", getPrivacy())
+	router.HEAD("/privacy", getPrivacy())
 
-	router.GET("/privacy", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=86400")
+	router.GET("/terms", getTerms())
+	router.HEAD("/terms", getTerms())
 
-		c.HTML(http.StatusOK, "privacy.html", gin.H{
-			"PageTitle":   "Privacy",
-			"Description": "Privacy policy for jotone.eu",
-			"NoRobots":    true,
-		})
-	})
-
-	router.GET("/terms", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=86400")
-
-		c.HTML(http.StatusOK, "terms.html", gin.H{
-			"PageTitle":   "Terms",
-			"Description": "Terms of service for jotone.eu",
-			"NoRobots":    true,
-		})
-	})
-
-	router.GET("/contacts", func(c *gin.Context) {
-		c.Header("Cache-Control", "public, max-age=86400")
-
-		c.HTML(http.StatusOK, "contacts.html", gin.H{
-			"PageTitle":   "Contacts",
-			"Description": "Contacts for jotone.eu",
-			"NoRobots":    true,
-		})
-	})
+	router.GET("/contacts", getContacts())
+	router.HEAD("/contacts", getContacts())
 
 	// ---------------|
 	// Dynamic Routes |
 	// ---------------|
 
+	router.HEAD("/post/:post_id", posts.GetPost)
 	router.GET("/post/:post_id", posts.GetPost)
+
+	router.HEAD("/posts/sitemap.xml", posts.GetSitemap)
 	router.GET("/posts/sitemap.xml", posts.GetSitemap)
 
 	postsRoutes := router.Group("/timeline")
 	{
+		postsRoutes.HEAD("/", posts.GetPosts)
 		postsRoutes.GET("/", posts.GetPosts)
+
+		postsRoutes.HEAD("/:offset", posts.GetPosts)
 		postsRoutes.GET("/:offset", posts.GetPosts)
 	}
 
