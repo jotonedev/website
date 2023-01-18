@@ -23,8 +23,6 @@ func ConnectDB() {
 
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		log.Info("Connected to database")
 	}
 }
 

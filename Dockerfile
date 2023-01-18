@@ -18,7 +18,13 @@ RUN CGO_ENABLED=0 go build -v -a -ldflags '-s -w -extldflags "-static"' -o serve
 FROM busybox:latest
 
 WORKDIR /srv
+
+ARG VERSION=""
+
+ENV PORT=8080
+ENV GO111MODULE=on
 ENV GIN_MODE=release
+ENV STATIC_VERSION=$VERSION
 
 RUN echo "nonroot:x:1002:1002:nobody:/:/bin/sh" >> /etc/passwd
 RUN echo "nonroot:x:1002:" >> /etc/group
