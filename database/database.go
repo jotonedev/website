@@ -14,11 +14,17 @@ func ConnectDB() {
 	// Connect to the postgres database using the connection string from the environment variables
 	connStr := os.Getenv("DB_CONN_STR")
 
+	if len(connStr) == 0 {
+		log.Fatal("Connection string was not declared")
+	}
+
 	var err error
 	db, err = sql.Open("postgres", connStr)
 
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		log.Info("Connected to database")
 	}
 }
 
@@ -113,5 +119,7 @@ func CloseDB() {
 
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		log.Info("Closed connection with database")
 	}
 }
