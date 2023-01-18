@@ -16,7 +16,10 @@ var tmplFS embed.FS
 var staticFS embed.FS
 
 func main() {
+	log.Info("Starting")
+
 	database.ConnectDB()
+	defer database.CloseDB()
 
 	router := routers.InitRouter(tmplFS, staticFS)
 	// Trust cloudflare proxy
@@ -29,11 +32,12 @@ func main() {
 
 	router.Use(limits.RequestSizeLimiter(10))
 
-	err := router.Run(":8080")
+	log.Info("Running")
+	err := router.Run("0.0.0.0:8080")
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Close DB connection
-	database.CloseDB()
+	log.Info("Shutting down")
 }
