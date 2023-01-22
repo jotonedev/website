@@ -4,10 +4,8 @@
 # permission.
 
 User-agent: *
-Disallow: /.well-known/
 Disallow: /terms
 Disallow: /privacy
-Disallow: /contacts
 
 Sitemap: https://jotone.eu/sitemap.xml
 Sitemap: https://jotone.eu/posts/sitemap.xml
