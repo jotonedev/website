@@ -43,7 +43,7 @@ func staticMiddleware() gin.HandlerFunc {
 // InitRouter initialize router and return it
 func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	router := gin.New()
-	router.Use(gin.Logger())
+	router.Use(gin.LoggerWithConfig(gin.LoggerConfig{SkipPaths: []string{"/static/", "/"}}))
 
 	// Add middleware
 	router.Use(gzip.Gzip(gzip.BestSpeed))
