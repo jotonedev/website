@@ -1,9 +1,12 @@
-.PHONY: build test clean tool lint help
+.PHONY: build style test clean tool lint help
 
-all: build
+all: build style
 
 build:
 	@go build -v .
+
+style:
+	sass style/default.scss static/style.css
 
 test:
 	go test -v ./...
