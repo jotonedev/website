@@ -1,0 +1,14 @@
+$primaryColor: var(primaryColor);
+$primaryTextColor: var(primaryTextColor);
+$textColor: var(textColor);
+$backgroundColor: var(backgroundColor);
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+.header {
+    background-color: $primaryColor;
+    color: $primaryTextColor;
+}
