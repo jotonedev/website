@@ -40,8 +40,8 @@ func getContacts() func(c *gin.Context) {
 
 		c.HTML(http.StatusOK, "contacts.html", gin.H{
 			"PageTitle":   "Contacts",
-			"Description": "Contacts for jotone.eu",
-			"NoRobots":    true,
+			"Description": "Contact information for John Toniutti",
+			"NoRobots":    false,
 		})
 	}
 }
