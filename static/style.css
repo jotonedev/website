@@ -9,12 +9,11 @@
     src: url('roboto/roboto.eot');
     /* IE9 Compat Modes */
     src: local(''),
-    url('roboto/roboto.eot?#iefix') format('embedded-opentype'),
-        /* IE6-IE8 */ url('roboto/roboto.woff2') format('woff2'),
-        /* Super Modern Browsers */ url('roboto/roboto.woff') format('woff'),
-        /* Modern Browsers */ url('roboto/roboto.ttf') format('truetype'),
-        /* Safari, Android, iOS */ url('roboto/roboto.svg#Roboto') format('svg');
-    /* Legacy iOS */
+        /* IE6-IE8 */ url('roboto/roboto.eot?#iefix') format('embedded-opentype'),
+        /* Super Modern Browsers */ url('roboto/roboto.woff2') format('woff2'),
+        /* Modern Browsers */ url('roboto/roboto.woff') format('woff'),
+        /* Safari, Android, iOS */ url('roboto/roboto.ttf') format('truetype'),
+        /* Legacy iOS */ url('roboto/roboto.svg#Roboto') format('svg');
     font-display: swap;
 }
 
