@@ -19,10 +19,10 @@
                         <figure>
                             {{if $e.Thumbnail}}
                                 <img src="{{$e.Thumbnail.URL}}" alt="{{$e.Thumbnail.Alt}}" class="post__thumbnail"
-                                     loading="lazy">
+                                     loading="eager">
                             {{else}}
                                 <img src="/static/imgs/thumbnail.png" alt="Thumbnail" class="post__thumbnail"
-                                     loading="lazy">
+                                     loading="eager">
                             {{end}}
                         </figure>
                     </div>
