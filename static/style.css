@@ -65,6 +65,7 @@ small {
 
 a {
     text-decoration: none;
+    color: #000;
 }
 
 a:hover {
@@ -78,7 +79,7 @@ p {
 
 @media (prefers-color-scheme: dark) {
     a {
-        color: #ffffff;
+        color: #fff;
         text-decoration: none;
     }
     a:hover {
