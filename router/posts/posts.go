@@ -77,6 +77,7 @@ func GetPost(c *gin.Context) {
 		"NoRobots":     false,
 		"Lang":         post.Lang,
 		"PreviewImage": post.Thumbnail,
+		"Keywords":     post.Keywords,
 	})
 }
 

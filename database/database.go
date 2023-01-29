@@ -27,7 +27,7 @@ func ConnectDB() {
 }
 
 func GetPost(postID string) (Post, error) {
-	stmt, err := db.Prepare("select posts.title, posts.description, posts.created_at, posts.content, posts.lang, thumbnails.image, thumbnails.width, thumbnails.height, thumbnails.type from blog.posts left join blog.thumbnails on posts.thumbnail_id = blog.thumbnails.id where posts.id=$1")
+	stmt, err := db.Prepare("select posts.title, posts.description, posts.created_at, posts.content, posts.lang, posts.keywords, thumbnails.image, thumbnails.width, thumbnails.height, thumbnails.type from blog.posts left join blog.thumbnails on posts.thumbnail_id = blog.thumbnails.id where posts.id=$1")
 	if err != nil {
 		log.Error(err)
 	}
@@ -35,7 +35,7 @@ func GetPost(postID string) (Post, error) {
 	var post Post
 
 	row := stmt.QueryRow(postID)
-	err = row.Scan(&post.Title, &post.Description, &post.CreatedAt, &post.Content, &post.Lang, &post.Thumbnail.URL, &post.Thumbnail.Width, &post.Thumbnail.Height, &post.Thumbnail.Type)
+	err = row.Scan(&post.Title, &post.Description, &post.CreatedAt, &post.Content, &post.Lang, &post.Keywords, &post.Thumbnail.URL, &post.Thumbnail.Width, &post.Thumbnail.Height, &post.Thumbnail.Type)
 	return post, err
 }
 

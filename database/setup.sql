@@ -16,7 +16,7 @@ create table if not exists blog.posts
     id           int primary key not null,
     title        varchar(60)     not null,
     description  varchar(180)    not null,
-    keywords     varchar(120)    not null,
+    keywords     varchar(80)     null,
     created_at   timestamp       not null default current_timestamp,
     updated_at   timestamp       not null default current_timestamp,
     content      text            not null,
