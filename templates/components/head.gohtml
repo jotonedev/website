@@ -18,7 +18,9 @@
         <meta name="description" content="{{.Description}}">
         <meta name="author" content="John Toniutti">
         <meta name="hostname" content="jotone.eu">
-
+        {{if .Keywords}}
+            <meta name="keywords" content="{{.Keywords}}">
+        {{end}}
         <meta name="color-scheme" content="light dark">
         <meta name="theme-color" content="#FFF">
 

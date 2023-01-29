@@ -14,21 +14,22 @@
                 {{if gt $i 0}}
                     <hr class="timeline__separator">
                 {{end}}
+                <a href="/post/{{$e.ID}}">
                 <article class="timeline__post">
                     <div class="timeline__post__image">
                         <figure>
                             {{if $e.Thumbnail}}
                                 <img src="{{$e.Thumbnail.URL}}" alt="{{$e.Thumbnail.Alt}}" class="post__thumbnail"
-                                     loading="lazy">
+                                     loading="eager">
                             {{else}}
                                 <img src="/static/imgs/thumbnail.png" alt="Thumbnail" class="post__thumbnail"
-                                     loading="lazy">
+                                     loading="eager">
                             {{end}}
                         </figure>
                     </div>
                     <div class="timeline__post__content">
                         <h2 class="timeline__post__title">
-                            <a href="/post/{{$e.ID}}">{{$e.Title}}</a>
+                            {{$e.Title}}
                         </h2>
                         <p class="timeline__post__description">
                             {{$e.Description}}
@@ -38,6 +39,7 @@
                         </p>
                     </div>
                 </article>
+                </a>
             {{else}}
                 <p>
                     No posts yet.

@@ -65,7 +65,7 @@ small {
 
 a {
     text-decoration: none;
-    color: WindowText;
+    color: #000;
 }
 
 a:hover {
@@ -78,6 +78,10 @@ p {
 }
 
 @media (prefers-color-scheme: dark) {
+    a {
+        color: #fff;
+        text-decoration: none;
+    }
     a:hover {
         color: #ffffffaa;
     }
@@ -85,6 +89,14 @@ p {
     html {
         background-color: #121212;
         color: #fefefe;
+    }
+}
+
+@media print
+{
+    .no_print, .no_print *
+    {
+        display: none !important;
     }
 }
 

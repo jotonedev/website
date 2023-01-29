@@ -15,6 +15,7 @@ type Post struct {
 	Content     string    `xml:"-"`
 	Lang        string    `xml:"-"`
 	Thumbnail   Thumbnail `xml:"-"`
+	Keywords    string    `xml:"-"`
 
 	// Used for sitemap
 	URL       string    `xml:"loc"` // This is not in the database, but is used for the sitemap
