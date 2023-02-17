@@ -10,13 +10,6 @@
         <p>
             This is the personal blog of John Toniutti.
         </p>
-
-        {{if .Cards}}
-            {{range .Cards}}
-                {{template "card" .}}
-            {{end}}
-        {{end}}
-
     </div>
 
     {{template "footer" .}}
