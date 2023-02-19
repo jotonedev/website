@@ -91,49 +91,36 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	// -------------|
 
 	router.GET("/robots.txt", getRobots(staticFS))
-	router.HEAD("/robots.txt", getRobots(staticFS))
-
 	router.GET("/sitemap.xml", getSitemap(staticFS))
-	router.HEAD("/sitemap.xml", getSitemap(staticFS))
-
 	router.GET("/favicon.ico", getFavicon(staticFS))
-	router.HEAD("/favicon.ico", getFavicon(staticFS))
-
 	router.GET("/browserconfig.xml", getConfig(staticFS))
-	router.HEAD("/browserconfig.xml", getConfig(staticFS))
 
 	// --------------|
 	// Static Routes |
 	// --------------|
 
 	router.GET("/", getIndex())
-	router.HEAD("/", getIndex())
-
 	router.GET("/privacy", getPrivacy())
-	router.HEAD("/privacy", getPrivacy())
-
 	router.GET("/terms", getTerms())
-	router.HEAD("/terms", getTerms())
-
 	router.GET("/contacts", getContacts())
-	router.HEAD("/contacts", getContacts())
 
 	// ---------------|
 	// Dynamic Routes |
 	// ---------------|
 
-	router.HEAD("/post/:post_id", posts.GetPost)
 	router.GET("/post/:post_id", posts.GetPost)
-
-	router.HEAD("/posts/sitemap.xml", posts.GetSitemap)
 	router.GET("/posts/sitemap.xml", posts.GetSitemap)
 
 	postsRoutes := router.Group("/timeline")
 	{
-		postsRoutes.HEAD("/", posts.GetPosts)
-		postsRoutes.GET("/", posts.GetPosts)
+		postsRoutes.GET("", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, "/timeline/0")
+		})
 
-		postsRoutes.HEAD("/:offset", posts.GetPosts)
+		postsRoutes.GET("/", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, "/timeline/0")
+		})
+
 		postsRoutes.GET("/:offset", posts.GetPosts)
 	}
 

@@ -30,6 +30,7 @@ func getSitemap(staticFS embed.FS) func(c *gin.Context) {
 func getRobots(staticFS embed.FS) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		c.Header("Cache-Control", "public, max-age=31536000")
+
 		c.FileFromFS("/static/robots.txt", http.FS(staticFS))
 	}
 }

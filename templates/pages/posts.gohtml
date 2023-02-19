@@ -4,7 +4,6 @@
     {{template "head" .}}
     <body>
     {{template "header" .}}
-    {{template "sidebar" .}}
 
     <div id="content" class="container content">
         <h1>Posts</h1>
@@ -15,30 +14,30 @@
                     <hr class="timeline__separator">
                 {{end}}
                 <a href="/post/{{$e.ID}}">
-                <article class="timeline__post">
-                    <div class="timeline__post__image">
-                        <figure>
-                            {{if $e.Thumbnail}}
-                                <img src="{{$e.Thumbnail.URL}}" alt="{{$e.Thumbnail.Alt}}" class="post__thumbnail"
-                                     loading="eager">
-                            {{else}}
-                                <img src="/static/imgs/thumbnail.png" alt="Thumbnail" class="post__thumbnail"
-                                     loading="eager">
-                            {{end}}
-                        </figure>
-                    </div>
-                    <div class="timeline__post__content">
-                        <h2 class="timeline__post__title">
-                            {{$e.Title}}
-                        </h2>
-                        <p class="timeline__post__description">
-                            {{$e.Description}}
-                        </p>
-                        <p class="timeline__post__date">
-                            <time datetime="{{$e.CreatedAt.Format "2006-01-02"}}">{{$e.CreatedAt.Format "January 2, 2006"}}</time>
-                        </p>
-                    </div>
-                </article>
+                    <article class="timeline__post">
+                        <div class="timeline__post__image">
+                            <figure>
+                                {{if $e.Thumbnail}}
+                                    <img src="{{$e.Thumbnail.URL}}" alt="{{$e.Thumbnail.Alt}}" class="post__thumbnail"
+                                         loading="eager">
+                                {{else}}
+                                    <img src="/static/imgs/thumbnail.png" alt="Thumbnail" class="post__thumbnail"
+                                         loading="eager">
+                                {{end}}
+                            </figure>
+                        </div>
+                        <div class="timeline__post__content">
+                            <h2 class="timeline__post__title">
+                                {{$e.Title}}
+                            </h2>
+                            <p class="timeline__post__description">
+                                {{$e.Description}}
+                            </p>
+                            <p class="timeline__post__date">
+                                <time datetime="{{$e.CreatedAt.Format "2006-01-02"}}">{{$e.CreatedAt.Format "January 2, 2006"}}</time>
+                            </p>
+                        </div>
+                    </article>
                 </a>
             {{else}}
                 <p>

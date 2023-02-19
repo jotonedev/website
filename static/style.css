@@ -82,6 +82,7 @@ p {
         color: #fff;
         text-decoration: none;
     }
+
     a:hover {
         color: #ffffffaa;
     }
@@ -92,10 +93,8 @@ p {
     }
 }
 
-@media print
-{
-    .no_print, .no_print *
-    {
+@media print {
+    .no_print, .no_print * {
         display: none !important;
     }
 }
