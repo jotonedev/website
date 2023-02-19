@@ -20,16 +20,16 @@ func main() {
 	database.ConnectDB()
 	defer database.CloseDB()
 
-	router := router.InitRouter(tmplFS, staticFS)
+	httpRouter := router.InitRouter(tmplFS, staticFS)
 	// Trust cloudflare proxy
 
-	router.Use(cors.New(cors.Config{
+	httpRouter.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"https://jotone.eu", "https://images.jotone.eu"},
 		AllowMethods: []string{"GET", "HEAD"},
 		MaxAge:       12 * 60 * 60,
 	}))
 
-	router.Use(limits.RequestSizeLimiter(10))
+	httpRouter.Use(limits.RequestSizeLimiter(10))
 
 	// Get the port from the environment variables
 	// If it is not set, use port 8080
@@ -38,7 +38,7 @@ func main() {
 		port = "8080"
 	}
 
-	err := router.Run("0.0.0.0:" + port)
+	err := httpRouter.Run("0.0.0.0:" + port)
 
 	if err != nil {
 		log.Fatal(err)
