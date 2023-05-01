@@ -6,7 +6,7 @@ require (
 	github.com/gin-contrib/size v0.0.0-20230212012657-e14a14094dc4
 	github.com/gin-gonic/gin v1.9.0
 	github.com/gomarkdown/markdown v0.0.0-20230322041520-c84983bdbf2a
-	github.com/lib/pq v1.10.7
+	github.com/lib/pq v1.10.9
 	github.com/sirupsen/logrus v1.9.0
 )
 
