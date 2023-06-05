@@ -56,11 +56,17 @@ func InitRouter(tmplFS embed.FS, staticFS embed.FS) *gin.Engine {
 	// Assets |
 	// -------|
 
-	sub, err := fs.Sub(staticFS, "static")
+	static, err := fs.Sub(staticFS, "static")
 	if err != nil {
 		log.Fatal(err)
 	}
-	router.StaticFS("/static", http.FS(sub))
+	router.StaticFS("/static", http.FS(static))
+
+	known, err := fs.Sub(staticFS, "well-known")
+	if err != nil {
+		log.Fatal(err)
+	}
+	router.StaticFS("/.well-known", http.FS(known))
 
 	// -------|
 	// Errors |
